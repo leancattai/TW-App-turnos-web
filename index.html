@@ -7,11 +7,23 @@
   <meta name="description" content="Agenda de turnos online para médicos y odontólogos con confirmación por WhatsApp. Rápido, simple y seguro." />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <!-- RUTA RELATIVA -->
+
+  <!-- CSS -->
   <link rel="stylesheet" href="css/styles.css" />
-  <link rel="icon" href="assets/logo.svg" />
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/logoSinRecuadro.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/logoSinRecuadro.png">
+  <link rel="apple-touch-icon" href="assets/logoSinRecuadro.png">
   <meta name="theme-color" content="#0ea5e9">
 
+  <!-- SEO / Open Graph -->
+  <meta property="og:title" content="Turnos Web | Salud y Odontología">
+  <meta property="og:description" content="Agenda de turnos online con confirmación por WhatsApp.">
+  <meta property="og:image" content="assets/logo.png">
+  <meta property="og:type" content="website">
+
+  <!-- JSON-LD -->
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -24,8 +36,16 @@
 <body>
   <header class="nav">
     <div class="container nav__inner">
-      <a class="brand" href="#">
-        <img src="assets/logo.svg" alt="Logo Turnos Web" class="brand__logo" />
+      <a class="brand" href="/" aria-label="Inicio">
+        <!-- Logo dinámico según modo dark/light -->
+        <img id="siteLogo"
+             src="assets/logo.png"
+             data-dark="assets/logo.png"
+             data-light="assets/logoSinRecuadro.png"
+             alt="Turnos Web"
+             class="brand__logo"
+             decoding="async"
+             fetchpriority="high" />
         <span class="brand__name">Turnos Web</span>
       </a>
       <nav class="menu" aria-label="Principal">
@@ -48,8 +68,17 @@
           <p>Elegí especialidad, profesional y horario. Confirmamos por WhatsApp en 1 paso.</p>
           <a href="#turno" class="btn btn--lg">Reservar turno</a>
         </div>
-        <figure class="hero__imgwrap">
-          <img src="assets/hero.jpg" alt="Paciente reservando turno desde el celular" class="hero__img" />
+
+        <!-- Imagen local con fondo transparente + glow -->
+        <figure class="hero__imgwrap hero__imgwrap--person">
+          <img
+            id="heroImg"
+            src="assets/hero.png"
+            alt="Paciente reservando turno desde el celular"
+            class="hero__img hero__img--person"
+            decoding="async"
+            fetchpriority="high"
+            onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1580281657527-47f249e8f2f3?auto=format&fit=crop&w=1200&q=80';">
         </figure>
       </div>
     </section>
@@ -147,7 +176,20 @@
     </div>
   </footer>
 
-  <!-- RUTA RELATIVA -->
+  <!-- JS app -->
   <script src="js/app.js" defer></script>
+
+  <!-- Swap de logo según dark/light -->
+  <script>
+  (function() {
+    const el = document.getElementById('siteLogo');
+    if (!el) return;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const apply = () => { el.src = mq.matches ? el.dataset.dark : el.dataset.light; };
+    ['dark','light'].forEach(m => { const i=new Image(); i.src = el.dataset[m]; });
+    apply();
+    mq.addEventListener?.('change', apply);
+  })();
+  </script>
 </body>
 </html>
