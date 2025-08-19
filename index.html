@@ -3,467 +3,151 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Turnos Web • Demo</title>
-  <meta name="description" content="Demo de turnos online con redirección a WhatsApp para médicos y odontólogos." />
+  <title>Turnos Web | Salud y Odontología</title>
+  <meta name="description" content="Agenda de turnos online para médicos y odontólogos con confirmación por WhatsApp. Rápido, simple y seguro." />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="styles.css">
+  <!-- RUTA RELATIVA -->
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" href="assets/logo.svg" />
+  <meta name="theme-color" content="#0ea5e9">
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"MedicalClinic",
+    "name":"Turnos Web Demo",
+    "address":{"@type":"PostalAddress","addressLocality":"San Rafael","addressRegion":"Mendoza","addressCountry":"AR"}
+  }
+  </script>
 </head>
-<body class="text-slate-900">
-  <!-- NAV -->
-  <header class="sticky top-0 z-40 backdrop-blur bg-white/70 border-b border-slate-200/60">
-    <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="h-9 w-9 rounded-md bg-indigo-600 text-white grid place-items-center font-bold">TW</div>
-        <span class="font-semibold">Turnos Web • Demo</span>
-      </div>
-      <nav class="hidden sm:flex gap-6 text-sm">
-        <a href="#como-funciona" class="hover:text-indigo-600">Cómo funciona</a>
-        <a href="#sacar-turno" class="hover:text-indigo-600">Sacar turno</a>
-        <a href="#contacto" class="hover:text-indigo-600">Contacto</a>
+<body>
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="#">
+        <img src="assets/logo.svg" alt="Logo Turnos Web" class="brand__logo" />
+        <span class="brand__name">Turnos Web</span>
+      </a>
+      <nav class="menu" aria-label="Principal">
+        <a href="#turno" class="menu__link">Pedir turno</a>
+        <a href="#especialidades" class="menu__link">Especialidades</a>
+        <a href="#profesionales" class="menu__link">Profesionales</a>
+        <a href="#preguntas" class="menu__link">Preguntas</a>
+        <a href="#contacto" class="btn btn--sm">Contacto</a>
       </nav>
-      <a href="#sacar-turno" class="btn-primary hidden sm:inline-flex">Sacar turno</a>
+      <button class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false">☰</button>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="mx-auto max-w-6xl px-4 pt-12 pb-10">
-    <div class="grid md:grid-cols-2 gap-10 items-center">
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero__grid">
+        <div class="hero__text">
+          <h1>Agenda online con <span class="grad">confirmación por WhatsApp</span></h1>
+          <p>Elegí especialidad, profesional y horario. Confirmamos por WhatsApp en 1 paso.</p>
+          <a href="#turno" class="btn btn--lg">Reservar turno</a>
+        </div>
+        <figure class="hero__imgwrap">
+          <img src="assets/hero.jpg" alt="Paciente reservando turno desde el celular" class="hero__img" />
+        </figure>
+      </div>
+    </section>
+
+    <!-- FORM -->
+    <section id="turno" class="card section">
+      <div class="container">
+        <h2>Reservá tu turno</h2>
+        <form id="formTurno" class="grid" autocomplete="on">
+          <label class="field">
+            <span>Especialidad</span>
+            <select id="especialidad" required></select>
+          </label>
+          <label class="field">
+            <span>Profesional</span>
+            <select id="profesional" required></select>
+          </label>
+          <label class="field">
+            <span>Fecha</span>
+            <input id="fecha" type="date" required min="" />
+          </label>
+          <label class="field">
+            <span>Hora</span>
+            <input id="hora" type="time" required />
+          </label>
+          <label class="field">
+            <span>Nombre y Apellido</span>
+            <input id="nombre" type="text" placeholder="Tu nombre" required />
+          </label>
+          <label class="field">
+            <span>Teléfono (WhatsApp)</span>
+            <input id="telefono" type="tel" placeholder="Ej: +54 9 260 1234567" required />
+          </label>
+          <label class="field field--full">
+            <span>Motivo / Nota (opcional)</span>
+            <textarea id="nota" rows="2" placeholder="Breve descripción"></textarea>
+          </label>
+          <div class="actions">
+            <button type="submit" class="btn">Confirmar por WhatsApp</button>
+            <button type="button" id="btnCal" class="btn btn--ghost">Añadir a Google Calendar</button>
+          </div>
+          <p id="formMsg" role="status" class="msg" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ESPECIALIDADES -->
+    <section id="especialidades" class="section">
+      <div class="container">
+        <h2>Especialidades</h2>
+        <div class="cards" id="especialidadesList"></div>
+      </div>
+    </section>
+
+    <!-- PROFESIONALES -->
+    <section id="profesionales" class="section alt">
+      <div class="container">
+        <h2>Profesionales</h2>
+        <div class="cards" id="profesionalesList"></div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="preguntas" class="section">
+      <div class="container">
+        <h2>Preguntas frecuentes</h2>
+        <details class="faq"><summary>¿Cómo se confirma el turno?</summary><p>Se abre WhatsApp con un mensaje prellenado. Un asistente confirma y puede registrarse en Google Calendar.</p></details>
+        <details class="faq"><summary>¿Se puede reprogramar?</summary><p>Sí, respondiendo al mismo chat o llamando al consultorio.</p></details>
+        <details class="faq"><summary>¿Guardan mis datos?</summary><p>Solo para gestionar el turno. Podés pedir su eliminación.</p></details>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="contacto" class="cta">
+      <div class="container cta__inner">
+        <h2>¿Tenés dudas? Escribinos por WhatsApp</h2>
+        <a id="ctaWhatsApp" class="btn btn--lg" href="#">Abrir WhatsApp</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__grid">
       <div>
-        <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight hero-title">
-          Turnos online con <span class="text-indigo-600">confirmación por WhatsApp</span>
-        </h1>
-        <p class="mt-4 text-slate-600">
-          Demo pensada para consultorios médicos y odontológicos. Simple, rápida y lista para usar desde el día uno.
-        </p>
-        <div class="mt-6 flex gap-3">
-          <a href="#sacar-turno" class="btn-primary">Probar demo</a>
-          <button id="toggleDemo" class="btn-secondary" title="Modo demo evita abrir WhatsApp">
-            Modo demo: <span id="demoState" class="ml-1 font-semibold">ON</span>
-          </button>
-        </div>
-        <p class="mt-2 text-xs text-slate-500">* En modo demo verás el mensaje que se enviaría por WhatsApp sin salir del sitio.</p>
+        <strong>Turnos Web</strong>
+        <p>San Rafael, Mendoza · AR</p>
       </div>
-      <div class="rounded-2xl border bg-white/70 p-5 shadow-sm anim-fade-up">
-        <ul class="space-y-3 text-sm">
-          <li class="flex items-start gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-indigo-600"></span> Redirección automática a WhatsApp con mensaje prellenado.</li>
-          <li class="flex items-start gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-indigo-600"></span> Tabs para Médicos / Odontólogos, especialidades y profesionales.</li>
-          <li class="flex items-start gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-indigo-600"></span> Validación visual y diseño responsive.</li>
-          <li class="flex items-start gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-indigo-600"></span> Config sencilla (número de WhatsApp, agenda, horarios).</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- COMO FUNCIONA -->
-  <section id="como-funciona" class="mx-auto max-w-6xl px-4 py-10">
-    <h2 class="text-2xl font-bold">Cómo funciona</h2>
-    <div class="mt-6 grid md:grid-cols-3 gap-6">
-      <div class="rounded-xl border bg-white p-5">
-        <div class="text-sm font-semibold text-indigo-600">1. Elegí profesional</div>
-        <p class="mt-2 text-slate-600">Filtrá por especialidad y seleccioná el profesional.</p>
-      </div>
-      <div class="rounded-xl border bg-white p-5">
-        <div class="text-sm font-semibold text-indigo-600">2. Completá fecha y hora</div>
-        <p class="mt-2 text-slate-600">Ingresá tus datos y preferencia de turno.</p>
-      </div>
-      <div class="rounded-xl border bg-white p-5">
-        <div class="text-sm font-semibold text-indigo-600">3. Confirmá por WhatsApp</div>
-        <p class="mt-2 text-slate-600">Se abre WhatsApp con el mensaje listo para enviar.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- FORM -->
-  <section id="sacar-turno" class="mx-auto max-w-6xl px-4 py-10">
-    <div class="rounded-2xl border bg-white p-6 shadow-sm">
-      <h2 class="text-2xl font-bold">Sacar turno</h2>
-
-      <!-- Tabs -->
-      <div class="mt-6 inline-flex rounded-lg border bg-slate-50 p-1">
-        <button data-tab="medicos" class="tab-btn px-4 py-2 text-sm rounded-md bg-white border shadow-sm">Médicos</button>
-        <button data-tab="odontologos" class="tab-btn px-4 py-2 text-sm rounded-md">Odontólogos</button>
-      </div>
-
-      <form id="turnoForm" class="mt-6 grid gap-5 md:grid-cols-2">
-        <!-- Paciente -->
-        <div class="md:col-span-2">
-          <h3 class="font-semibold text-slate-800">Datos del paciente</h3>
-        </div>
-
-        <div>
-          <label class="tw-label" for="nombre">Nombre</label>
-          <input id="nombre" name="nombre" class="tw-input" required />
-          <p class="tw-error hidden"></p>
-        </div>
-
-        <div>
-          <label class="tw-label" for="apellido">Apellido</label>
-          <input id="apellido" name="apellido" class="tw-input" required />
-          <p class="tw-error hidden"></p>
-        </div>
-
-        <div>
-          <label class="tw-label" for="dni">DNI (opcional)</label>
-          <input id="dni" name="dni" class="tw-input" inputmode="numeric" />
-          <p class="tw-error hidden"></p>
-        </div>
-
-        <div>
-          <label class="tw-label" for="telefono">Teléfono</label>
-          <input id="telefono" name="telefono" class="tw-input" placeholder="Ej: 2611234567" required />
-          <p class="tw-error hidden"></p>
-        </div>
-
-        <!-- Profesional -->
-        <div class="md:col-span-2">
-          <h3 class="mt-2 font-semibold text-slate-800">Profesional y especialidad</h3>
-        </div>
-
-        <div>
-          <label class="tw-label" for="especialidad">Especialidad</label>
-          <select id="especialidad" name="especialidad" class="tw-input" required></select>
-          <p class="tw-error hidden"></p>
-        </div>
-
-        <div>
-          <label class="tw-label" for="profesional">Profesional</label>
-          <select id="profesional" name="profesional" class="tw-input" required></select>
-          <p class="tw-error hidden"></p>
-        </div>
-
-        <!-- Fecha/hora -->
-        <div class="md:col-span-2">
-          <h3 class="mt-2 font-semibold text-slate-800">Fecha y horario</h3>
-        </div>
-
-        <div>
-          <label class="tw-label" for="fecha">Fecha</label>
-          <input id="fecha" name="fecha" type="date" class="tw-input" required />
-          <p class="tw-error hidden"></p>
-        </div>
-
-        <div>
-          <label class="tw-label" for="hora">Hora</label>
-          <select id="hora" name="hora" class="tw-input" required></select>
-          <p class="tw-error hidden"></p>
-        </div>
-
-        <div class="md:col-span-2">
-          <label class="tw-label" for="motivo">Motivo / Comentarios</label>
-          <textarea id="motivo" name="motivo" rows="3" class="tw-input" placeholder="Ej: Control anual, dolor, limpieza, etc."></textarea>
-          <p class="tw-error hidden"></p>
-        </div>
-
-        <div class="md:col-span-2 flex items-center justify-between gap-3">
-          <button type="button" id="btnPreview" class="btn-secondary">Previsualizar mensaje</button>
-          <button type="submit" class="btn-primary">Confirmar por WhatsApp</button>
-        </div>
-      </form>
-    </div>
-  </section>
-
-  <!-- CONTACTO -->
-  <section id="contacto" class="mx-auto max-w-6xl px-4 py-10">
-    <div class="rounded-2xl border bg-white p-6">
-      <h2 class="text-2xl font-bold">¿Querés este sistema para tu consultorio?</h2>
-      <p class="mt-2 text-slate-600">Personalizamos logo, colores, profesionales y agenda. Integrable con ficha de paciente y recordatorios automáticos.</p>
-      <div class="mt-4">
-        <a href="#sacar-turno" class="btn-primary">Probar demo</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- MODAL PREVIEW -->
-  <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center">
-    <div class="absolute inset-0 bg-slate-900/60"></div>
-    <div class="relative z-10 w-[min(640px,92vw)] rounded-2xl border bg-white p-6 shadow-xl">
-      <div class="flex items-start justify-between gap-6">
-        <h3 class="text-lg font-semibold">Mensaje de WhatsApp</h3>
-        <button id="closeModal" class="text-slate-500 hover:text-slate-900">✕</button>
-      </div>
-      <pre id="previewMsg" class="mt-4 whitespace-pre-wrap text-sm bg-slate-50 p-4 rounded-lg border"></pre>
-      <div class="mt-6 flex justify-end gap-3">
-        <button id="copyMsg" class="btn-secondary">Copiar</button>
-        <button id="sendWhatsApp" class="btn-primary">Abrir WhatsApp</button>
-      </div>
-    </div>
-  </div>
-
-  <footer class="mt-10 border-t bg-white/70">
-    <div class="mx-auto max-w-6xl px-4 py-6 text-sm text-slate-500 flex items-center justify-between">
-      <span>© <span id="y"></span> Turnos Web • Demo</span>
-      <span>Hecho para presentar a médicos y odontólogos</span>
+      <nav class="footer__nav">
+        <a href="#turno">Pedir turno</a>
+        <a href="#especialidades">Especialidades</a>
+        <a href="#profesionales">Profesionales</a>
+        <a href="#preguntas">Preguntas</a>
+      </nav>
+      <p class="copy">© <span id="year"></span> Turnos Web — Demo</p>
     </div>
   </footer>
 
-  <script>
-    // ========= CONFIGURACIÓN RÁPIDA =========
-    const CONFIG = {
-      DEMO_MODE: true, // true: no abre WhatsApp automáticamente
-      WHATSAPP_NUMBER: "5492611234567", // Cambiar al número destino (con país, sin + ni guiones)
-      CLINIC_NAME: "Clínica Demo",
-      // Agenda: separada por categoría -> especialidades -> profesionales
-      DATA: {
-        medicos: {
-          especialidades: {
-            "Clínica Médica": [
-              { nombre: "Dra. Laura Pérez", horarios: { dias: [1,2,3,4,5], inicio:"09:00", fin:"13:00" } },
-              { nombre: "Dr. Martín Gómez", horarios: { dias: [1,3,5], inicio:"16:00", fin:"20:00" } }
-            ],
-            "Pediatría": [
-              { nombre: "Dra. Sofía Rivas", horarios: { dias: [2,4], inicio:"10:00", fin:"14:00" } }
-            ],
-            "Cardiología": [
-              { nombre: "Dr. Pablo Bustos", horarios: { dias: [1,4], inicio:"15:00", fin:"19:00" } }
-            ]
-          }
-        },
-        odontologos: {
-          especialidades: {
-            "Odontología General": [
-              { nombre: "Dra. Valentina Ruiz", horarios: { dias: [1,2,3,4,5], inicio:"09:00", fin:"13:00" } }
-            ],
-            "Ortodoncia": [
-              { nombre: "Dr. Ignacio Torres", horarios: { dias: [2,5], inicio:"14:00", fin:"19:00" } }
-            ],
-            "Implantología": [
-              { nombre: "Dra. Mariana Díaz", horarios: { dias: [3], inicio:"09:00", fin:"17:00" } }
-            ]
-          }
-        }
-      },
-      SLOT_EVERY_MIN: 30, // tamaño de turno (minutos)
-      MESSAGE_TEMPLATE: ({clinica, nombre, apellido, dni, tel, categoria, especialidad, profesional, fecha, hora, motivo}) =>
-`Hola ${clinica}, quisiera solicitar un turno:
-• Paciente: ${nombre} ${apellido}${dni? " (DNI " + dni + ")": ""}
-• Teléfono: ${tel}
-• Área: ${categoria === 'medicos' ? 'Médicos' : 'Odontólogos'}
-• Especialidad: ${especialidad}
-• Profesional: ${profesional}
-• Fecha y hora: ${fecha} ${hora}
-${motivo ? "• Motivo: " + motivo : ""}
-
-Gracias.`
-    };
-    // ========================================
-
-    // Utilidades
-    const $ = (s, el=document) => el.querySelector(s);
-    const $$ = (s, el=document) => [...el.querySelectorAll(s)];
-    const pad2 = n => n.toString().padStart(2,"0");
-    const toISODate = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
-    const encode = s => encodeURIComponent(s);
-
-    // Estado
-    let currentTab = 'medicos';
-
-    // DOM refs
-    const tabs = $$('.tab-btn');
-    const selEspecialidad = $('#especialidad');
-    const selProfesional = $('#profesional');
-    const selHora = $('#hora');
-    const inputFecha = $('#fecha');
-    const form = $('#turnoForm');
-    const btnPreview = $('#btnPreview');
-    const modal = $('#modal');
-    const previewMsg = $('#previewMsg');
-    const closeModal = $('#closeModal');
-    const copyMsg = $('#copyMsg');
-    const sendWhatsApp = $('#sendWhatsApp');
-    const toggleDemo = $('#toggleDemo');
-    const demoState = $('#demoState');
-
-    // Header: sombra al scrollear
-    (function(){
-      const h = document.querySelector('header.sticky');
-      const onScroll = () => h && h.classList.toggle('is-scrolled', window.scrollY > 6);
-      onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
-    })();
-
-    // Init
-    document.getElementById('y').textContent = new Date().getFullYear();
-    demoState.textContent = CONFIG.DEMO_MODE ? 'ON' : 'OFF';
-
-    // Tabs
-    tabs.forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        tabs.forEach(b=>b.classList.remove('bg-white','border','shadow-sm'));
-        btn.classList.add('bg-white','border','shadow-sm');
-        currentTab = btn.dataset.tab;
-        loadEspecialidades();
-        resetProfesionalHora();
-      });
-    });
-
-    function loadEspecialidades(){
-      const espObj = CONFIG.DATA[currentTab].especialidades;
-      selEspecialidad.innerHTML = `<option value="" disabled selected>Elegí una especialidad</option>`;
-      Object.keys(espObj).forEach(e=>{
-        const opt = document.createElement('option');
-        opt.value = e; opt.textContent = e;
-        selEspecialidad.appendChild(opt);
-      });
-    }
-
-    function resetProfesionalHora(){
-      selProfesional.innerHTML = `<option value="" disabled selected>Elegí profesional</option>`;
-      selHora.innerHTML = `<option value="" disabled selected>Elegí horario</option>`;
-    }
-
-    // Cargar especialidades iniciales
-    loadEspecialidades();
-
-    // Cambios
-    selEspecialidad.addEventListener('change', ()=>{
-      const esp = selEspecialidad.value;
-      const list = CONFIG.DATA[currentTab].especialidades[esp] || [];
-      selProfesional.innerHTML = `<option value="" disabled selected>Elegí profesional</option>`;
-      list.forEach(p=>{
-        const opt = document.createElement('option');
-        opt.value = p.nombre; opt.textContent = p.nombre;
-        opt.dataset.horarios = JSON.stringify(p.horarios);
-        selProfesional.appendChild(opt);
-      });
-      selHora.innerHTML = `<option value="" disabled selected>Elegí horario</option>`;
-    });
-
-    // Fecha min hoy
-    const today = new Date();
-    inputFecha.min = toISODate(today);
-
-    // Al elegir profesional o fecha, regenerar horarios
-    function generateSlots(horarios, fechaStr){
-      if(!horarios || !fechaStr) return [];
-      const fecha = new Date(fechaStr + 'T00:00:00');
-      const day = fecha.getDay(); // 0 = Domingo
-      if(!horarios.dias.includes(day)) return [];
-      const [h1,m1] = horarios.inicio.split(':').map(Number);
-      const [h2,m2] = horarios.fin.split(':').map(Number);
-      const inicio = new Date(fecha); inicio.setHours(h1, m1, 0, 0);
-      const fin = new Date(fecha); fin.setHours(h2, m2, 0, 0);
-      const slots = [];
-      for(let t = inicio; t < fin; t = new Date(t.getTime() + CONFIG.SLOT_EVERY_MIN*60000)){
-        slots.push(`${pad2(t.getHours())}:${pad2(t.getMinutes())}`);
-      }
-      return slots;
-    }
-
-    function refreshHoras(){
-      const opt = selProfesional.options[selProfesional.selectedIndex];
-      const fechaStr = inputFecha.value;
-      if(!opt || !opt.dataset.horarios || !fechaStr){
-        selHora.innerHTML = `<option value="" disabled selected>Elegí horario</option>`;
-        return;
-      }
-      const horarios = JSON.parse(opt.dataset.horarios);
-      const slots = generateSlots(horarios, fechaStr);
-      selHora.innerHTML = `<option value="" disabled selected>${slots.length? "Elegí horario":"Sin horarios disponibles para ese día"}</option>`;
-      slots.forEach(h=>{
-        const o = document.createElement('option');
-        o.value = h; o.textContent = h;
-        selHora.appendChild(o);
-      });
-    }
-
-    selProfesional.addEventListener('change', refreshHoras);
-    inputFecha.addEventListener('change', refreshHoras);
-
-    // Validación simple
-    function setError(el, msg=''){
-      const group = el.closest('div');
-      const err = group.querySelector('.tw-error');
-      if(msg){
-        el.classList.add('tw-invalid');
-        if(err){ err.textContent = msg; err.classList.remove('hidden'); }
-      }else{
-        el.classList.remove('tw-invalid');
-        if(err){ err.textContent = ''; err.classList.add('hidden'); }
-      }
-    }
-
-    function validate(){
-      let ok = true;
-      const req = ['nombre','apellido','telefono','especialidad','profesional','fecha','hora'];
-      req.forEach(id=>{
-        const el = document.getElementById(id);
-        if(!el.value){
-          setError(el, 'Campo obligatorio');
-          ok = false;
-        }else{
-          setError(el, '');
-        }
-      });
-      // tel simple
-      const tel = $('#telefono').value.trim();
-      if(tel && !/^[0-9]{6,15}$/.test(tel)){
-        setError($('#telefono'), 'Teléfono inválido (solo números, 6-15 dígitos)');
-        ok = false;
-      }
-      return ok;
-    }
-
-    // Mensaje WhatsApp
-    function buildMessage(){
-      const nombre = $('#nombre').value.trim();
-      const apellido = $('#apellido').value.trim();
-      const dni = $('#dni').value.trim();
-      const tel = $('#telefono').value.trim();
-      const especialidad = $('#especialidad').value;
-      const profesional = $('#profesional').value;
-      const fecha = $('#fecha').value.split('-').reverse().join('/'); // dd/mm/aaaa
-      const hora = $('#hora').value;
-      const motivo = $('#motivo').value.trim();
-
-      const msg = CONFIG.MESSAGE_TEMPLATE({
-        clinica: CONFIG.CLINIC_NAME, nombre, apellido, dni, tel,
-        categoria: currentTab, especialidad, profesional, fecha, hora, motivo
-      });
-      return msg;
-    }
-
-    function waLink(msg){
-      return `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encode(msg)}`;
-    }
-
-    // Previsualizar
-    btnPreview.addEventListener('click', ()=>{
-      if(!validate()) return;
-      const msg = buildMessage();
-      previewMsg.textContent = msg;
-      modal.classList.remove('hidden'); modal.classList.add('flex');
-    });
-
-    closeModal.addEventListener('click', ()=> modal.classList.add('hidden'));
-    copyMsg.addEventListener('click', async ()=>{
-      try { await navigator.clipboard.writeText(previewMsg.textContent); copyMsg.textContent = '¡Copiado!'; setTimeout(()=>copyMsg.textContent='Copiar',1500); }
-      catch{ /* noop */ }
-    });
-    sendWhatsApp.addEventListener('click', ()=>{
-      const url = waLink(previewMsg.textContent);
-      window.open(url, '_blank', 'noopener');
-    });
-
-    // Submit (WhatsApp / Demo)
-    form.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      if(!validate()) return;
-      const msg = buildMessage();
-      if(CONFIG.DEMO_MODE){
-        previewMsg.textContent = msg;
-        modal.classList.remove('hidden'); modal.classList.add('flex');
-      }else{
-        window.open(waLink(msg), '_blank', 'noopener');
-      }
-    });
-
-    // Toggle DEMO
-    toggleDemo.addEventListener('click', ()=>{
-      CONFIG.DEMO_MODE = !CONFIG.DEMO_MODE;
-      demoState.textContent = CONFIG.DEMO_MODE ? 'ON' : 'OFF';
-      toggleDemo.classList.toggle('ring-2');
-    });
-  </script>
+  <!-- RUTA RELATIVA -->
+  <script src="js/app.js" defer></script>
 </body>
 </html>
