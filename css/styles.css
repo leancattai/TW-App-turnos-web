@@ -8,6 +8,11 @@
   --brand-2: #22d3ee;
   --ok: #22c55e;
   --shadow: 0 10px 30px rgba(2, 132, 199, .25);
+
+  /* Colores de destino para ondas */
+  --wave-bg: #0b1220;      /* igual al fondo base */
+  --wave-deeper: #0c1526;  /* fondo un poco más profundo */
+  --wave-alt: #0e1a2f;     /* para secciones .alt */
 }
 
 *{box-sizing:border-box}
@@ -29,6 +34,16 @@ section{scroll-margin-top: calc(var(--nav-h) + 12px);} /* anclas con navbar stic
 h1,h2{line-height:1.1; letter-spacing:-.01em}
 h1{font-size:clamp(32px, 5vw, 54px); margin:0 0 8px}
 h2{font-size:clamp(24px, 3.6vw, 34px); margin:0 0 24px}
+
+/* ========== Ondas separadoras ========== */
+.wave{ position:relative; height:84px; overflow:hidden; margin-top:28px; }
+.wave svg{ width:100%; height:100%; display:block; }
+.wave path{ fill: var(--wave-to, var(--wave-bg)); }
+
+/* elegir destino según contraste que quieras */
+.wave--to-bg     { --wave-to: var(--wave-bg); }
+.wave--to-deeper { --wave-to: var(--wave-deeper); }
+.wave--to-alt    { --wave-to: var(--wave-alt); }
 
 /* Nav */
 .nav{position:sticky; top:0; z-index:50; backdrop-filter:saturate(160%) blur(8px); background:rgba(11,18,32,.6); border-bottom:1px solid rgba(255,255,255,.06)}
