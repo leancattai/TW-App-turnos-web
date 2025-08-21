@@ -2,10 +2,10 @@
 const DATA = {
   wspDestino: "+5492604849175", // <- WhatsApp del consultorio (editar)
   especialidades: [
-    { id: "clinica", nombre: "Clínica Médica" },
-    { id: "pediatria", nombre: "Pediatría" },
-    { id: "odontologia", nombre: "Odontología" },
-    { id: "dermatologia", nombre: "Dermatología" }
+    { id: "clinica", nombre: "Clínica Médica", icon: "stethoscope" },
+    { id: "pediatria", nombre: "Pediatría", icon: "baby" },
+    { id: "odontologia", nombre: "Odontología", icon: "tooth" },
+    { id: "dermatologia", nombre: "Dermatología", icon: "sparkles" }
   ],
   profesionales: [
     { id: 1, nombre: "Dra. Ana Pérez", esp: "clinica" },
@@ -46,14 +46,22 @@ function renderListas(){
   const esp = $("#especialidadesList");
   const prof = $("#profesionalesList");
   if (esp) esp.innerHTML = DATA.especialidades.map(e=>`
-    <article class="cardItem">
+    <article class="cardItem reveal" data-anim="fade-up">
+      <div class="cardItem__icon"><i data-lucide="${e.icon}"></i></div>
       <h3>${e.nombre}</h3>
       <p>Atención de ${e.nombre.toLowerCase()} con profesionales matriculados.</p>
     </article>`).join("");
   if (prof) prof.innerHTML = DATA.profesionales.map(p=>{
     const name = DATA.especialidades.find(e=>e.id===p.esp)?.nombre || "";
-    return `<article class="cardItem"><h3>${p.nombre}</h3><p>${name}</p></article>`;
+    const icon = DATA.especialidades.find(e=>e.id===p.esp)?.icon || "user";
+    return `<article class="cardItem reveal" data-anim="fade-up">
+      <div class="cardItem__icon"><i data-lucide="${icon}"></i></div>
+      <h3>${p.nombre}</h3><p>${name}</p>
+    </article>`;
   }).join("");
+
+  // Pintar iconos
+  if (window.lucide?.createIcons) lucide.createIcons();
 }
 
 // WhatsApp builder
@@ -82,12 +90,13 @@ function onSubmit(e){
     nota: $("#nota")?.value.trim()
   };
   const faltan = Object.entries(vals).filter(([k,v])=>["nota"].includes(k)?false:!v);
+  const m = $("#formMsg");
   if(faltan.length){
-    const m = $("#formMsg"); if (m) m.textContent = "Completá los campos obligatorios.";
+    if (m) m.textContent = "Completá los campos obligatorios.";
     return;
   }
+  if (m) m.textContent = "Abriendo WhatsApp para confirmar…";
   window.open(construirMensajeWhatsApp(vals), "_blank");
-  const m = $("#formMsg"); if (m) m.textContent = "Abriendo WhatsApp para confirmar…";
 }
 
 // Google Calendar quick-add (sin API)
@@ -98,14 +107,17 @@ function addToGoogleCalendar(){
   const dt = new Date(`${f}T${h}:00`);
   const dtEnd = new Date(dt.getTime()+30*60*1000);
   const fmt = (d)=> d.toISOString().replace(/[-:]/g,"").split(".")[0]+"Z";
-  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent("Consulta Médica / Odontológica")}&dates=${fmt(dt)}/${fmt(dtEnd)}&details=${encodeURIComponent("Evento creado desde Turnos Web Demo")}`;
+  const desc = `Evento creado desde Turnos Web Demo`;
+  const title = `Consulta: ${$("#nombre")?.value || "Paciente"} — ${$("#profesional")?.selectedOptions?.[0]?.text || "Profesional"}`;
+  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${fmt(dt)}/${fmt(dtEnd)}&details=${encodeURIComponent(desc)}`;
   window.open(url, "_blank");
 }
 
-// CTA WhatsApp en footer
+// CTA WhatsApp en secciones + FAB
 function setCtaWhats(){
-  const a = $("#ctaWhatsApp");
-  if (a) a.href = `https://wa.me/${DATA.wspDestino}?text=${encodeURIComponent("Hola! Quiero hacer una consulta.")}`;
+  const href = `https://wa.me/${DATA.wspDestino}?text=${encodeURIComponent("Hola! Quiero hacer una consulta.")}`;
+  const a = $("#ctaWhatsApp"); if (a) a.href = href;
+  const fab = $("#fabWhatsApp"); if (fab) fab.href = href;
 }
 
 // Menu mobile
@@ -157,6 +169,20 @@ function navActiveOnScroll(){
   sections.forEach(s=>io.observe(s));
 }
 
+// Animaciones on-scroll (reveal)
+function setupReveal(){
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('is-visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
+  els.forEach(el=> io.observe(el));
+}
+
 // Init
 window.addEventListener("DOMContentLoaded",()=>{
   setMinFecha();
@@ -167,6 +193,7 @@ window.addEventListener("DOMContentLoaded",()=>{
   navMobile();
   navScrollEffect();
   navActiveOnScroll();
+  setupReveal();
 
   document.getElementById("especialidad")?.addEventListener("change", e=>{
     cargarProfesionales(e.target.value)
@@ -174,4 +201,7 @@ window.addEventListener("DOMContentLoaded",()=>{
   document.getElementById("formTurno")?.addEventListener("submit", onSubmit);
   document.getElementById("btnCal")?.addEventListener("click", addToGoogleCalendar);
   const y = document.getElementById("year"); if (y) y.textContent = new Date().getFullYear();
+
+  // Re-render de iconos en caso de SPA-like
+  if (window.lucide?.createIcons) lucide.createIcons();
 });

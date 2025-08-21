@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Turnos Web | Salud y Odontología</title>
   <meta name="description" content="Agenda de turnos online para médicos y odontólogos con confirmación por WhatsApp. Rápido, simple y seguro." />
+
+  <!-- Preconexión y fuentes -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -17,11 +19,14 @@
   <link rel="apple-touch-icon" href="assets/logoSinRecuadro.png">
   <meta name="theme-color" content="#0ea5e9">
 
-  <!-- SEO / Open Graph -->
+  <!-- Open Graph / Twitter -->
   <meta property="og:title" content="Turnos Web | Salud y Odontología">
   <meta property="og:description" content="Agenda de turnos online con confirmación por WhatsApp.">
   <meta property="og:image" content="assets/logo.png">
   <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Turnos Web | Salud y Odontología">
+  <meta name="twitter:description" content="Agenda de turnos online con confirmación por WhatsApp.">
 
   <!-- JSON-LD -->
   <script type="application/ld+json">
@@ -32,6 +37,15 @@
     "address":{"@type":"PostalAddress","addressLocality":"San Rafael","addressRegion":"Mendoza","addressCountry":"AR"}
   }
   </script>
+
+  <!-- Iconos (Lucide) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <noscript>
+    <style>
+      .reveal{opacity:1; transform:none}
+    </style>
+  </noscript>
 </head>
 <body>
   <header class="nav">
@@ -63,14 +77,14 @@
     <!-- HERO -->
     <section class="hero">
       <div class="container hero__grid">
-        <div class="hero__text">
+        <div class="hero__text reveal" data-anim="fade-up">
           <h1>Agenda online con <span class="grad">confirmación por WhatsApp</span></h1>
           <p>Elegí especialidad, profesional y horario. Confirmamos por WhatsApp en 1 paso.</p>
           <a href="#turno" class="btn btn--lg">Reservar turno</a>
         </div>
 
         <!-- Imagen local con fondo transparente + glow -->
-        <figure class="hero__imgwrap hero__imgwrap--person">
+        <figure class="hero__imgwrap hero__imgwrap--person reveal" data-anim="fade-in">
           <img
             id="heroImg"
             src="assets/hero.png"
@@ -92,39 +106,45 @@
     <!-- FORM -->
     <section id="turno" class="card section">
       <div class="container">
-        <h2>Reservá tu turno</h2>
+        <h2 class="reveal" data-anim="fade-up">Reservá tu turno</h2>
         <form id="formTurno" class="grid" autocomplete="on">
-          <label class="field">
+          <label class="field reveal" data-anim="fade-up">
             <span>Especialidad</span>
-            <select id="especialidad" required></select>
+            <select id="especialidad" required aria-label="Especialidad"></select>
           </label>
-          <label class="field">
+          <label class="field reveal" data-anim="fade-up">
             <span>Profesional</span>
-            <select id="profesional" required></select>
+            <select id="profesional" required aria-label="Profesional"></select>
           </label>
-          <label class="field">
+          <label class="field reveal" data-anim="fade-up">
             <span>Fecha</span>
-            <input id="fecha" type="date" required min="" />
+            <input id="fecha" type="date" required min="" aria-label="Fecha" />
           </label>
-          <label class="field">
+          <label class="field reveal" data-anim="fade-up">
             <span>Hora</span>
-            <input id="hora" type="time" required />
+            <input id="hora" type="time" required aria-label="Hora" />
           </label>
-          <label class="field">
+          <label class="field reveal" data-anim="fade-up">
             <span>Nombre y Apellido</span>
-            <input id="nombre" type="text" placeholder="Tu nombre" required />
+            <input id="nombre" type="text" placeholder="Tu nombre" required aria-label="Nombre y Apellido" />
           </label>
-          <label class="field">
+          <label class="field reveal" data-anim="fade-up">
             <span>Teléfono (WhatsApp)</span>
-            <input id="telefono" type="tel" placeholder="Ej: +54 9 260 1234567" required />
+            <input id="telefono" type="tel" placeholder="Ej: +54 9 260 1234567" required aria-label="Teléfono" />
           </label>
-          <label class="field field--full">
+          <label class="field field--full reveal" data-anim="fade-up">
             <span>Motivo / Nota (opcional)</span>
-            <textarea id="nota" rows="2" placeholder="Breve descripción"></textarea>
+            <textarea id="nota" rows="2" placeholder="Breve descripción" aria-label="Motivo o Nota"></textarea>
           </label>
-          <div class="actions">
-            <button type="submit" class="btn">Confirmar por WhatsApp</button>
-            <button type="button" id="btnCal" class="btn btn--ghost">Añadir a Google Calendar</button>
+          <div class="actions reveal" data-anim="fade-up">
+            <button type="submit" class="btn" aria-label="Confirmar por WhatsApp">
+              <i data-lucide="message-circle"></i>
+              Confirmar por WhatsApp
+            </button>
+            <button type="button" id="btnCal" class="btn btn--ghost" aria-label="Añadir a Google Calendar">
+              <i data-lucide="calendar"></i>
+              Añadir a Google Calendar
+            </button>
           </div>
           <p id="formMsg" role="status" class="msg" aria-live="polite"></p>
         </form>
@@ -140,7 +160,7 @@
     <!-- ESPECIALIDADES -->
     <section id="especialidades" class="section">
       <div class="container">
-        <h2>Especialidades</h2>
+        <h2 class="reveal" data-anim="fade-up">Especialidades</h2>
         <div class="cards" id="especialidadesList"></div>
       </div>
       <div class="wave wave--to-deeper">
@@ -153,7 +173,7 @@
     <!-- PROFESIONALES -->
     <section id="profesionales" class="section alt">
       <div class="container">
-        <h2>Profesionales</h2>
+        <h2 class="reveal" data-anim="fade-up">Profesionales</h2>
         <div class="cards" id="profesionalesList"></div>
       </div>
       <div class="wave wave--to-alt">
@@ -166,10 +186,10 @@
     <!-- FAQ -->
     <section id="preguntas" class="section">
       <div class="container">
-        <h2>Preguntas frecuentes</h2>
-        <details class="faq"><summary>¿Cómo se confirma el turno?</summary><p>Se abre WhatsApp con un mensaje prellenado. Un asistente confirma y puede registrarse en Google Calendar.</p></details>
-        <details class="faq"><summary>¿Se puede reprogramar?</summary><p>Sí, respondiendo al mismo chat o llamando al consultorio.</p></details>
-        <details class="faq"><summary>¿Guardan mis datos?</summary><p>Solo para gestionar el turno. Podés pedir su eliminación.</p></details>
+        <h2 class="reveal" data-anim="fade-up">Preguntas frecuentes</h2>
+        <details class="faq reveal" data-anim="fade-up"><summary>¿Cómo se confirma el turno?</summary><p>Se abre WhatsApp con un mensaje prellenado. Un asistente confirma y puede registrarse en Google Calendar.</p></details>
+        <details class="faq reveal" data-anim="fade-up"><summary>¿Se puede reprogramar?</summary><p>Sí, respondiendo al mismo chat o llamando al consultorio.</p></details>
+        <details class="faq reveal" data-anim="fade-up"><summary>¿Guardan mis datos?</summary><p>Solo para gestionar el turno. Podés pedir su eliminación.</p></details>
       </div>
       <div class="wave wave--to-deeper">
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
@@ -181,27 +201,33 @@
     <!-- CTA -->
     <section id="contacto" class="cta">
       <div class="container cta__inner">
-        <h2>¿Tenés dudas? Escribinos por WhatsApp</h2>
-        <a id="ctaWhatsApp" class="btn btn--lg" href="#">Abrir WhatsApp</a>
+        <h2 class="reveal" data-anim="fade-up">¿Tenés dudas? Escribinos por WhatsApp</h2>
+        <a id="ctaWhatsApp" class="btn btn--lg" href="#">
+          <i data-lucide="whatsapp"></i>
+          Abrir WhatsApp
+        </a>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="container footer__grid">
-      <div>
+      <div class="reveal" data-anim="fade-up">
         <strong>Turnos Web</strong>
         <p>San Rafael, Mendoza · AR</p>
       </div>
-      <nav class="footer__nav">
+      <nav class="footer__nav reveal" data-anim="fade-up" aria-label="Enlaces del sitio">
         <a href="#turno">Pedir turno</a>
         <a href="#especialidades">Especialidades</a>
         <a href="#profesionales">Profesionales</a>
         <a href="#preguntas">Preguntas</a>
       </nav>
-      <p class="copy">© <span id="year"></span> Turnos Web — Demo</p>
+      <p class="copy reveal" data-anim="fade-up">© <span id="year"></span> Turnos Web — Demo</p>
     </div>
   </footer>
+
+  <!-- Botón flotante de WhatsApp -->
+  <a id="fabWhatsApp" class="fab" href="#" aria-label="Abrir WhatsApp"></a>
 
   <!-- JS app -->
   <script src="js/app.js" defer></script>
