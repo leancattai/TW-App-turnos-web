@@ -23,19 +23,19 @@ const setMinFecha = () => {
   const yyyy = hoy.getFullYear();
   const mm = String(hoy.getMonth()+1).padStart(2,'0');
   const dd = String(hoy.getDate()).padStart(2,'0');
-  const el = $("#fecha");
+  const el = document.getElementById("fecha");
   if (el) el.min = `${yyyy}-${mm}-${dd}`;
 };
 
 // Poblar selects
 function cargarEspecialidades(){
-  const sel = $("#especialidad");
+  const sel = document.getElementById("especialidad");
   if (!sel) return;
   sel.innerHTML = `<option value="" disabled selected>Seleccioná</option>` +
     DATA.especialidades.map(e=>`<option value="${e.id}">${e.nombre}</option>`).join("");
 }
 function cargarProfesionales(filtroEsp){
-  const sel = $("#profesional");
+  const sel = document.getElementById("profesional");
   if (!sel) return;
   const items = DATA.profesionales.filter(p=>!filtroEsp || p.esp===filtroEsp);
   sel.innerHTML = `<option value="" disabled selected>Seleccioná</option>` +
@@ -43,8 +43,8 @@ function cargarProfesionales(filtroEsp){
 }
 
 function renderListas(){
-  const esp = $("#especialidadesList");
-  const prof = $("#profesionalesList");
+  const esp = document.getElementById("especialidadesList");
+  const prof = document.getElementById("profesionalesList");
   if (esp) esp.innerHTML = DATA.especialidades.map(e=>`
     <article class="cardItem reveal" data-anim="fade-up">
       <div class="cardItem__icon"><i data-lucide="${e.icon}"></i></div>
@@ -78,37 +78,69 @@ function construirMensajeWhatsApp(vals){
   return `https://wa.me/${DATA.wspDestino}?text=${texto}`;
 }
 
+// ========== Fase 2: Validación + feedback ==========
+function validarFormulario(vals){
+  let ok = true;
+  ["especialidad","profesional","fecha","hora","nombre","telefono"].forEach(id=>{
+    const el = document.getElementById(id);
+    const err = document.getElementById(`err-${id}`);
+    if(!vals[id]){
+      ok = false;
+      el?.classList.add("is-invalid");
+      el?.setAttribute("aria-invalid","true");
+      if (err) err.textContent = "Campo obligatorio";
+    } else {
+      el?.classList.remove("is-invalid");
+      el?.setAttribute("aria-invalid","false");
+      if (err) err.textContent = "";
+    }
+  });
+  return ok;
+}
+
 function onSubmit(e){
   e.preventDefault();
   const vals = {
-    especialidad: $("#especialidad")?.value,
-    profesional: $("#profesional")?.value,
-    fecha: $("#fecha")?.value,
-    hora: $("#hora")?.value,
-    nombre: $("#nombre")?.value.trim(),
-    telefono: $("#telefono")?.value.trim(),
-    nota: $("#nota")?.value.trim()
+    especialidad: document.getElementById("especialidad")?.value,
+    profesional: document.getElementById("profesional")?.value,
+    fecha: document.getElementById("fecha")?.value,
+    hora: document.getElementById("hora")?.value,
+    nombre: document.getElementById("nombre")?.value?.trim(),
+    telefono: document.getElementById("telefono")?.value?.trim(),
+    nota: document.getElementById("nota")?.value?.trim()
   };
-  const faltan = Object.entries(vals).filter(([k,v])=>["nota"].includes(k)?false:!v);
-  const m = $("#formMsg");
-  if(faltan.length){
-    if (m) m.textContent = "Completá los campos obligatorios.";
+  const ok = validarFormulario(vals);
+  const msg = document.getElementById("formMsg");
+  const btn = document.getElementById("btnSubmit");
+
+  if(!ok){
+    if (msg) msg.textContent = "Por favor, completá los campos obligatorios.";
     return;
   }
-  if (m) m.textContent = "Abriendo WhatsApp para confirmar…";
-  window.open(construirMensajeWhatsApp(vals), "_blank");
+
+  // Loader visual en el botón
+  btn.disabled = true;
+  const oldText = btn.textContent;
+  btn.textContent = "Enviando…";
+
+  setTimeout(()=>{
+    window.open(construirMensajeWhatsApp(vals), "_blank");
+    if (msg) msg.textContent = "Abriendo WhatsApp para confirmar…";
+    btn.disabled = false;
+    btn.textContent = oldText;
+  }, 800);
 }
 
 // Google Calendar quick-add (sin API)
 function addToGoogleCalendar(){
-  const f = $("#fecha")?.value; const h = $("#hora")?.value;
-  const msg = $("#formMsg");
+  const f = document.getElementById("fecha")?.value; const h = document.getElementById("hora")?.value;
+  const msg = document.getElementById("formMsg");
   if(!f||!h){ if(msg) msg.textContent = "Elegí fecha y hora para agregar a Calendar."; return; }
   const dt = new Date(`${f}T${h}:00`);
   const dtEnd = new Date(dt.getTime()+30*60*1000);
   const fmt = (d)=> d.toISOString().replace(/[-:]/g,"").split(".")[0]+"Z";
   const desc = `Evento creado desde Turnos Web Demo`;
-  const title = `Consulta: ${$("#nombre")?.value || "Paciente"} — ${$("#profesional")?.selectedOptions?.[0]?.text || "Profesional"}`;
+  const title = `Consulta: ${document.getElementById("nombre")?.value || "Paciente"} — ${document.getElementById("profesional")?.selectedOptions?.[0]?.text || "Profesional"}`;
   const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${fmt(dt)}/${fmt(dtEnd)}&details=${encodeURIComponent(desc)}`;
   window.open(url, "_blank");
 }
@@ -116,8 +148,8 @@ function addToGoogleCalendar(){
 // CTA WhatsApp en secciones + FAB
 function setCtaWhats(){
   const href = `https://wa.me/${DATA.wspDestino}?text=${encodeURIComponent("Hola! Quiero hacer una consulta.")}`;
-  const a = $("#ctaWhatsApp"); if (a) a.href = href;
-  const fab = $("#fabWhatsApp"); if (fab) fab.href = href;
+  const a = document.getElementById("ctaWhatsApp"); if (a) a.href = href;
+  const fab = document.getElementById("fabWhatsApp"); if (fab) fab.href = href;
 }
 
 // Menu mobile
@@ -202,6 +234,6 @@ window.addEventListener("DOMContentLoaded",()=>{
   document.getElementById("btnCal")?.addEventListener("click", addToGoogleCalendar);
   const y = document.getElementById("year"); if (y) y.textContent = new Date().getFullYear();
 
-  // Re-render de iconos en caso de SPA-like
+  // Re-render de iconos
   if (window.lucide?.createIcons) lucide.createIcons();
 });

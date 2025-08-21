@@ -75,7 +75,6 @@ h2{font-size:clamp(24px, 3.6vw, 34px); margin:0 0 24px}
 /* Buttons */
 .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 18px; border-radius:14px; background:linear-gradient(180deg, var(--brand), #0284c7); border:1px solid rgba(255,255,255,.12); color:white; text-decoration:none; box-shadow:var(--shadow); font-weight:600; transition: transform .2s ease, box-shadow .2s ease;}
 .btn:hover{transform:translateY(-2px); box-shadow:0 16px 40px rgba(2,132,199,.35)}
-.btn i{width:18px; height:18px}
 .btn--lg{padding:14px 22px}
 .btn--sm{padding:8px 12px; font-size:14px}
 .btn--ghost{background:transparent; border:1px solid rgba(255,255,255,.18); color:var(--text); box-shadow:none}
@@ -176,6 +175,15 @@ h2{font-size:clamp(24px, 3.6vw, 34px); margin:0 0 24px}
 /* ==== REVEAL (animaciones on-scroll) ==== */
 .reveal{opacity:0; transform: translateY(16px); transition: opacity .7s ease, transform .7s ease}
 .reveal.is-visible{opacity:1; transform:none}
-
-/* Variantes opcionales por data-anim */
 .reveal[data-anim="fade-in"]{ transform:none; }
+
+/* ==== Fase 2: errores y disabled ==== */
+.field input.is-invalid,
+.field select.is-invalid,
+.field textarea.is-invalid{
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239,68,68,.3);
+}
+.error{ color:#ef4444; font-size:13px; margin-top:2px; min-height:14px; }
+
+.btn:disabled{ opacity:.6; cursor:not-allowed; }

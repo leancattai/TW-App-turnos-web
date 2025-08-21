@@ -19,14 +19,11 @@
   <link rel="apple-touch-icon" href="assets/logoSinRecuadro.png">
   <meta name="theme-color" content="#0ea5e9">
 
-  <!-- Open Graph / Twitter -->
+  <!-- SEO / Open Graph -->
   <meta property="og:title" content="Turnos Web | Salud y Odontología">
   <meta property="og:description" content="Agenda de turnos online con confirmación por WhatsApp.">
   <meta property="og:image" content="assets/logo.png">
   <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Turnos Web | Salud y Odontología">
-  <meta name="twitter:description" content="Agenda de turnos online con confirmación por WhatsApp.">
 
   <!-- JSON-LD -->
   <script type="application/ld+json">
@@ -39,7 +36,7 @@
   </script>
 
   <!-- Iconos (Lucide) -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
 
   <noscript>
     <style>
@@ -107,42 +104,46 @@
     <section id="turno" class="card section">
       <div class="container">
         <h2 class="reveal" data-anim="fade-up">Reservá tu turno</h2>
-        <form id="formTurno" class="grid" autocomplete="on">
+        <form id="formTurno" class="grid" autocomplete="on" novalidate>
           <label class="field reveal" data-anim="fade-up">
             <span>Especialidad</span>
-            <select id="especialidad" required aria-label="Especialidad"></select>
+            <select id="especialidad" required aria-describedby="err-especialidad"></select>
+            <small id="err-especialidad" class="error"></small>
           </label>
           <label class="field reveal" data-anim="fade-up">
             <span>Profesional</span>
-            <select id="profesional" required aria-label="Profesional"></select>
+            <select id="profesional" required aria-describedby="err-profesional"></select>
+            <small id="err-profesional" class="error"></small>
           </label>
           <label class="field reveal" data-anim="fade-up">
             <span>Fecha</span>
-            <input id="fecha" type="date" required min="" aria-label="Fecha" />
+            <input id="fecha" type="date" required min="" aria-describedby="err-fecha" />
+            <small id="err-fecha" class="error"></small>
           </label>
           <label class="field reveal" data-anim="fade-up">
             <span>Hora</span>
-            <input id="hora" type="time" required aria-label="Hora" />
+            <input id="hora" type="time" required aria-describedby="err-hora" />
+            <small id="err-hora" class="error"></small>
           </label>
           <label class="field reveal" data-anim="fade-up">
             <span>Nombre y Apellido</span>
-            <input id="nombre" type="text" placeholder="Tu nombre" required aria-label="Nombre y Apellido" />
+            <input id="nombre" type="text" placeholder="Tu nombre" required aria-describedby="err-nombre" />
+            <small id="err-nombre" class="error"></small>
           </label>
           <label class="field reveal" data-anim="fade-up">
             <span>Teléfono (WhatsApp)</span>
-            <input id="telefono" type="tel" placeholder="Ej: +54 9 260 1234567" required aria-label="Teléfono" />
+            <input id="telefono" type="tel" placeholder="Ej: +54 9 260 1234567" required aria-describedby="err-telefono" />
+            <small id="err-telefono" class="error"></small>
           </label>
           <label class="field field--full reveal" data-anim="fade-up">
             <span>Motivo / Nota (opcional)</span>
-            <textarea id="nota" rows="2" placeholder="Breve descripción" aria-label="Motivo o Nota"></textarea>
+            <textarea id="nota" rows="2" placeholder="Breve descripción"></textarea>
           </label>
           <div class="actions reveal" data-anim="fade-up">
-            <button type="submit" class="btn" aria-label="Confirmar por WhatsApp">
-              <i data-lucide="message-circle"></i>
+            <button type="submit" class="btn" id="btnSubmit" aria-label="Confirmar por WhatsApp">
               Confirmar por WhatsApp
             </button>
             <button type="button" id="btnCal" class="btn btn--ghost" aria-label="Añadir a Google Calendar">
-              <i data-lucide="calendar"></i>
               Añadir a Google Calendar
             </button>
           </div>
@@ -202,10 +203,7 @@
     <section id="contacto" class="cta">
       <div class="container cta__inner">
         <h2 class="reveal" data-anim="fade-up">¿Tenés dudas? Escribinos por WhatsApp</h2>
-        <a id="ctaWhatsApp" class="btn btn--lg" href="#">
-          <i data-lucide="whatsapp"></i>
-          Abrir WhatsApp
-        </a>
+        <a id="ctaWhatsApp" class="btn btn--lg" href="#">Abrir WhatsApp</a>
       </div>
     </section>
   </main>
