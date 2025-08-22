@@ -4,6 +4,16 @@ let DATA = { wspDestino: "", especialidades: [], profesionales: [] };
 // Utilidades
 const $ = (q) => document.querySelector(q);
 
+// ------- Helpers de teléfono -------
+const limpiarTelefono = (v="") => v.replace(/[()\-\s]/g, ""); // quita espacios, ( ), -
+function esTelefonoValido(v=""){
+  const t = limpiarTelefono(v);
+  // Acepta: E.164 (+###########, 8-15 dígitos) o formatos AR típicos (+549XXXXXXXXXX)
+  const reE164 = /^\+[1-9]\d{7,14}$/;
+  const reAR   = /^\+?54?9?\d{10}$/; // +54 9 + 10 dígitos (sin separadores)
+  return reE164.test(t) || reAR.test(t);
+}
+
 // Cargar JSON con fetch
 async function cargarData() {
   try {
@@ -77,27 +87,47 @@ function construirMensajeWhatsApp(vals){
     `• Profesional: ${profName}%0A`+
     `• Fecha y hora: ${fecha} ${hora}%0A`+
     `• Paciente: ${nombre}%0A`+
-    `• Teléfono: ${telefono}`+ (nota?`%0A• Nota: ${encodeURIComponent(nota)}`:"");
+    `• Teléfono: ${limpiarTelefono(telefono)}`+ (nota?`%0A• Nota: ${encodeURIComponent(nota)}`:"");
   return `https://wa.me/${DATA.wspDestino}?text=${texto}`;
 }
 
 // ========== Validación ==========
+function setError(idCampo, mensaje){
+  const el = document.getElementById(idCampo);
+  const err = document.getElementById(`err-${idCampo}`);
+  if (mensaje){
+    el?.classList.add("is-invalid");
+    el?.setAttribute("aria-invalid","true");
+    if (err){ err.textContent = mensaje; /* aria-live lo agregamos en HTML en el siguiente paso */ }
+  } else {
+    el?.classList.remove("is-invalid");
+    el?.setAttribute("aria-invalid","false");
+    if (err) err.textContent = "";
+  }
+}
+
 function validarFormulario(vals){
   let ok = true;
+
+  // Requeridos genéricos
   ["especialidad","profesional","fecha","hora","nombre","telefono"].forEach(id=>{
-    const el = document.getElementById(id);
-    const err = document.getElementById(`err-${id}`);
     if(!vals[id]){
       ok = false;
-      el?.classList.add("is-invalid");
-      el?.setAttribute("aria-invalid","true");
-      if (err) err.textContent = "Campo obligatorio";
+      setError(id, "Campo obligatorio");
     } else {
-      el?.classList.remove("is-invalid");
-      el?.setAttribute("aria-invalid","false");
-      if (err) err.textContent = "";
+      setError(id, "");
     }
   });
+
+  // Regla específica: teléfono válido
+  if (vals.telefono){
+    const telOk = esTelefonoValido(vals.telefono);
+    if (!telOk){
+      ok = false;
+      setError("telefono", "Formato inválido. Ej: +54 9 260 1234567");
+    }
+  }
+
   return ok;
 }
 
@@ -112,12 +142,12 @@ function onSubmit(e){
     telefono: document.getElementById("telefono")?.value?.trim(),
     nota: document.getElementById("nota")?.value?.trim()
   };
-  const ok = validarFormulario(vals);
   const msg = document.getElementById("formMsg");
   const btn = document.getElementById("btnSubmit");
 
+  const ok = validarFormulario(vals);
   if(!ok){
-    if (msg) msg.textContent = "Por favor, completá los campos obligatorios.";
+    if (msg) msg.textContent = "Revisá los errores marcados en rojo.";
     return;
   }
 
@@ -235,4 +265,8 @@ window.addEventListener("DOMContentLoaded",async()=>{
   const y = document.getElementById("year"); if (y) y.textContent = new Date().getFullYear();
 
   if (window.lucide?.createIcons) lucide.createIcons();
+
+  // Normalizar el input teléfono en tiempo real (quita espacios y guiones al perder foco)
+  const tel = document.getElementById("telefono");
+  tel?.addEventListener("blur", ()=>{ if(tel.value) tel.value = limpiarTelefono(tel.value); });
 });
