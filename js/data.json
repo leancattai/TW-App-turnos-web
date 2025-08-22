@@ -1,0 +1,15 @@
+{
+  "wspDestino": "+5492604849175",
+  "especialidades": [
+    { "id": "clinica", "nombre": "Clínica Médica", "icon": "stethoscope" },
+    { "id": "pediatria", "nombre": "Pediatría", "icon": "baby" },
+    { "id": "odontologia", "nombre": "Odontología", "icon": "tooth" },
+    { "id": "dermatologia", "nombre": "Dermatología", "icon": "sparkles" }
+  ],
+  "profesionales": [
+    { "id": 1, "nombre": "Dra. Ana Pérez", "esp": "clinica" },
+    { "id": 2, "nombre": "Dr. Luis Gómez", "esp": "pediatria" },
+    { "id": 3, "nombre": "Dra. Zoe Lashes", "esp": "odontologia" },
+    { "id": 4, "nombre": "Dr. Martín Rivas", "esp": "dermatologia" }
+  ]
+}

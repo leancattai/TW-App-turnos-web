@@ -1,23 +1,27 @@
-// Datos mockeados (reemplazar por API/backend cuando esté)
-const DATA = {
-  wspDestino: "+5492604849175", // <- WhatsApp del consultorio (editar)
-  especialidades: [
-    { id: "clinica", nombre: "Clínica Médica", icon: "stethoscope" },
-    { id: "pediatria", nombre: "Pediatría", icon: "baby" },
-    { id: "odontologia", nombre: "Odontología", icon: "tooth" },
-    { id: "dermatologia", nombre: "Dermatología", icon: "sparkles" }
-  ],
-  profesionales: [
-    { id: 1, nombre: "Dra. Ana Pérez", esp: "clinica" },
-    { id: 2, nombre: "Dr. Luis Gómez", esp: "pediatria" },
-    { id: 3, nombre: "Dra. Zoe Lashes", esp: "odontologia" },
-    { id: 4, nombre: "Dr. Martín Rivas", esp: "dermatologia" }
-  ]
-};
+// Global para datos
+let DATA = { wspDestino: "", especialidades: [], profesionales: [] };
 
 // Utilidades
 const $ = (q) => document.querySelector(q);
 
+// Cargar JSON con fetch
+async function cargarData() {
+  try {
+    const res = await fetch("js/data.json");
+    if (!res.ok) throw new Error("No se pudo cargar data.json");
+    DATA = await res.json();
+  } catch (err) {
+    console.error("Error cargando data.json:", err);
+    // fallback básico por si falla el fetch
+    DATA = {
+      wspDestino: "+5492600000000",
+      especialidades: [{ id: "clinica", nombre: "Clínica Médica", icon: "stethoscope" }],
+      profesionales: [{ id: 1, nombre: "Dr. Demo", esp: "clinica" }]
+    };
+  }
+}
+
+// Fecha mínima
 const setMinFecha = () => {
   const hoy = new Date();
   const yyyy = hoy.getFullYear();
@@ -42,6 +46,7 @@ function cargarProfesionales(filtroEsp){
     items.map(p=>`<option value="${p.id}">${p.nombre}</option>`).join("");
 }
 
+// Render de listas en secciones
 function renderListas(){
   const esp = document.getElementById("especialidadesList");
   const prof = document.getElementById("profesionalesList");
@@ -59,8 +64,6 @@ function renderListas(){
       <h3>${p.nombre}</h3><p>${name}</p>
     </article>`;
   }).join("");
-
-  // Pintar iconos
   if (window.lucide?.createIcons) lucide.createIcons();
 }
 
@@ -78,7 +81,7 @@ function construirMensajeWhatsApp(vals){
   return `https://wa.me/${DATA.wspDestino}?text=${texto}`;
 }
 
-// ========== Fase 2: Validación + feedback ==========
+// ========== Validación ==========
 function validarFormulario(vals){
   let ok = true;
   ["especialidad","profesional","fecha","hora","nombre","telefono"].forEach(id=>{
@@ -118,7 +121,6 @@ function onSubmit(e){
     return;
   }
 
-  // Loader visual en el botón
   btn.disabled = true;
   const oldText = btn.textContent;
   btn.textContent = "Enviando…";
@@ -131,7 +133,7 @@ function onSubmit(e){
   }, 800);
 }
 
-// Google Calendar quick-add (sin API)
+// Google Calendar quick-add
 function addToGoogleCalendar(){
   const f = document.getElementById("fecha")?.value; const h = document.getElementById("hora")?.value;
   const msg = document.getElementById("formMsg");
@@ -145,14 +147,14 @@ function addToGoogleCalendar(){
   window.open(url, "_blank");
 }
 
-// CTA WhatsApp en secciones + FAB
+// CTA WhatsApp
 function setCtaWhats(){
   const href = `https://wa.me/${DATA.wspDestino}?text=${encodeURIComponent("Hola! Quiero hacer una consulta.")}`;
   const a = document.getElementById("ctaWhatsApp"); if (a) a.href = href;
   const fab = document.getElementById("fabWhatsApp"); if (fab) fab.href = href;
 }
 
-// Menu mobile
+// Nav mobile
 function navMobile(){
   const burger = document.getElementById("burger");
   burger?.addEventListener("click",()=>{
@@ -163,7 +165,7 @@ function navMobile(){
   });
 }
 
-// Nav: efecto al scrollear
+// Nav efecto scroll
 function navScrollEffect(){
   const nav = document.querySelector(".nav");
   const apply = () => {
@@ -179,15 +181,13 @@ function navScrollEffect(){
   window.addEventListener("scroll", apply, { passive: true });
 }
 
-// Nav: activar link según sección visible
+// Nav activo según scroll
 function navActiveOnScroll(){
   const ids = ["turno","especialidades","profesionales","preguntas","contacto"];
   const sections = ids.map(id=>document.getElementById(id)).filter(Boolean);
   if (!sections.length) return;
-
   const links = [...document.querySelectorAll('.menu__link')];
   const byHash = (hash)=> links.find(a=>a.getAttribute('href')===`#${hash}`);
-
   const io = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
       if(e.isIntersecting){
@@ -197,11 +197,10 @@ function navActiveOnScroll(){
       }
     });
   }, {rootMargin: "-40% 0px -50% 0px", threshold: 0});
-
   sections.forEach(s=>io.observe(s));
 }
 
-// Animaciones on-scroll (reveal)
+// Animaciones reveal
 function setupReveal(){
   const els = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries)=>{
@@ -216,7 +215,8 @@ function setupReveal(){
 }
 
 // Init
-window.addEventListener("DOMContentLoaded",()=>{
+window.addEventListener("DOMContentLoaded",async()=>{
+  await cargarData();
   setMinFecha();
   cargarEspecialidades();
   cargarProfesionales();
@@ -234,6 +234,5 @@ window.addEventListener("DOMContentLoaded",()=>{
   document.getElementById("btnCal")?.addEventListener("click", addToGoogleCalendar);
   const y = document.getElementById("year"); if (y) y.textContent = new Date().getFullYear();
 
-  // Re-render de iconos
   if (window.lucide?.createIcons) lucide.createIcons();
 });
